@@ -28,4 +28,17 @@ Ensure you have any SQL Database client installed (e.g., MySQL Workbench, DBeave
 ```bash
 git clone [https://github.com/ajayhub1/Social-Media-Analytics.git](https://github.com/ajayhub1/Social-Media-Analytics.git)
 ```
+# Social Media Analytics Database 📊
 
+A comprehensive MySQL database project designed to simulate a social media platform's backend analytics.
+
+## ER Diagram
+
+<img src="ER%20Diagram.png" alt="Social Media Analytics ER Diagram" width="1000">
+
+## Features
+- User Management
+- Posts and Comments
+- Likes and Shares
+- Campaign Analytics
+- Messaging System
