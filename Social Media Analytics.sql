@@ -351,6 +351,41 @@ INSERT INTO conversations (conversation_id) VALUES
 
 SELECT * FROM conversations;
 
+CREATE TABLE conversation_participants (
+    participant_id INT PRIMARY KEY AUTO_INCREMENT,
+    conversation_id INT,
+    user_id INT,
+    FOREIGN KEY (conversation_id)
+        REFERENCES conversations(conversation_id),
+    FOREIGN KEY (user_id)
+        REFERENCES users(user_id)
+);
+
+INSERT INTO conversation_participants
+(conversation_id, user_id)
+VALUES
+(1,1),
+(1,2),
+(2,3),
+(2,4),
+(3,5),
+(3,6),
+(4,7),
+(4,8),
+(5,9),
+(5,10);
+
+Select * from conversation_participants;
+SELECT
+c.conversation_id,
+u.username
+FROM conversations c
+JOIN conversation_participants cp
+ON c.conversation_id = cp.conversation_id
+JOIN users u
+ON cp.user_id = u.user_id
+WHERE c.conversation_id = 1;
+
 CREATE TABLE messages (
     message_id INT PRIMARY KEY AUTO_INCREMENT,
     conversation_id INT,
@@ -368,6 +403,16 @@ INSERT INTO messages (conversation_id,sender_id,message_text) VALUES
 (16,16,'Great startup'),(17,17,'Useful information'),(18,18,'Helpful post'),(19,19,'Good business tips'),(20,20,'Excellent work');
 
 SELECT * FROM messages;
+SELECT
+c.conversation_id,
+u.username,
+m.message_text
+FROM conversations c
+JOIN messages m
+ON c.conversation_id = m.conversation_id
+JOIN users u
+ON m.sender_id = u.user_id
+WHERE c.conversation_id = 1;
 
 CREATE TABLE post_analytics (
     analytics_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -386,6 +431,12 @@ INSERT INTO post_analytics (post_id,views,likes_count,shares_count,comments_coun
 SELECT * FROM post_analytics;
 SELECT * FROM Post_Analytics ORDER BY views DESC;
 SELECT SUM(likes) from post_analytics;
+CREATE TRIGGER trg_like_count
+AFTER INSERT ON Likes
+FOR EACH ROW
+UPDATE Post_Analytics
+SET likes_count = likes_count + 1
+WHERE post_id = NEW.post_id;
 
 CREATE TABLE user_analytics (
     user_analytics_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -401,6 +452,20 @@ INSERT INTO user_analytics (user_id,total_posts,total_followers,total_following)
 (11,16,190,90),(12,7,90,50),(13,19,240,120),(14,10,140,65),(15,6,80,40),(16,17,210,105),(17,21,270,150),(18,9,125,55),(19,14,175,88),(20,11,145,72);
 
 SELECT * FROM user_analytics;
+SELECT
+u.user_id,
+u.username,
+COUNT(DISTINCT p.post_id) AS total_posts,
+COUNT(DISTINCT f1.follower_user_id) AS total_followers,
+COUNT(DISTINCT f2.following_user_id) AS total_following
+FROM Users u
+LEFT JOIN Posts p
+ON u.user_id = p.user_id
+LEFT JOIN Followers f1
+ON u.user_id = f1.following_user_id
+LEFT JOIN Followers f2
+ON u.user_id = f2.follower_user_id
+GROUP BY u.user_id;
 
 CREATE TABLE engagement_metrics (
     metric_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -483,6 +548,10 @@ INSERT INTO ad_campaigns (user_id,campaign_name,budget,start_date,end_date) VALU
 (20,'Social Service Campaign',2800.00,'2026-03-20','2026-03-29');
 
 SELECT * FROM ad_campaigns;
+ALTER TABLE ad_campaigns
+ADD source_id INT,
+ADD FOREIGN KEY (source_id)
+REFERENCES traffic_sources(source_id);
 
 CREATE TABLE ad_creatives (
     creative_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -566,4 +635,3 @@ INSERT INTO user_sessions (user_id,login_time,logout_time,ip_address) VALUES
 (20,'2026-04-20 18:00:00','2026-04-20 19:00:00','192.168.1.20');
 
 SELECT * FROM user_sessions;
-
