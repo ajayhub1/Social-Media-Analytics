@@ -28,6 +28,7 @@ Ensure you have any SQL Database client installed (e.g., MySQL Workbench, DBeave
 ```bash
 git clone [https://github.com/ajayhub1/Social-Media-Analytics.git](https://github.com/ajayhub1/Social-Media-Analytics.git)
 ```
-## 📐 ER Diagram
+## ER Diagram
+
 ![ER Diagram](Documents/My Projects/ER Diagram Picture.png)
 
